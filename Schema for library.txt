@@ -1,0 +1,54 @@
+Documentation for the SQL Schema of the Library Management System Project
+
+-Description
+Below is a detailed documentation of the SQL schema provided, describing the purpose and structure of each table, its fields, and relationships.
+This project involves creating a relational database to manage a library system. 
+The database will handle information about books, authors, members, and borrowing transactions. 
+The project demonstrates essential SQL concepts such as table creation, CRUD operations, and relationships using primary and foreign keys.
+---
+
+1. Authors Table
+This table stores information about the authors.
+
+Fields
+- author_id (SERIAL, PRIMARY KEY): A inique identifier for each author.
+- first_name (VARCHAR(50), NOT NULL): The first name of the author.
+- last_name (VARCHAR(50), NOT NULL): The last name of the author.
+- nationality (VARCHAR(50), NOT NULL): The nationality of the author.
+- birth_date (DATE, DEFAULT CURRENT_DATE): The date
+
+2. Books Table
+This table contains information about the books in the library.
+
+ Fields
+- book_id (SERIAL, PRIMARY KEY): The unique identifier for each book.
+- title (VARCHAR(200), NOT NULL): The title of the book.
+- author_id (INT, NOT NULL): The book author 
+- genre (VARCHAR(50), NOT NULL): The genre of the book
+- publication_year (INT): 
+- available_copies (INT, DEFAULT 0)
+- FOREIGN KEY (author_id) REFERENCES Authors (author_id)
+
+3. Members Table
+This table stores information about library members.
+
+ Fields
+- member_id (SERIAL, PRIMARY KEY):
+- first_name (VARCHAR(50), NOT NULL):
+- last_name (VARCHAR(50), NOT NULL):
+- email (VARCHAR(100), UNIQUE NOT NULL):
+- phone_number (VARCHAR(15))
+- join_date (DATE, DEFAULT CURRENT_DATE):
+
+4. Borrowings Table
+Tracks borrowing transactions.
+
+ Fields 
+- borrowing_id (SERIAL, PRIMARY KEY)
+- member_id (INT, NOT NULL)
+- book_id INT NOT NULL,
+- borrow_date DATE DEFAULT CURRENT_DATE,
+- return_date DATE,
+- FOREIGN KEY (member_id) REFERENCES Members (member_id),
+- FOREIGN KEY (book_id) REFERENCES Books (book_id)
+

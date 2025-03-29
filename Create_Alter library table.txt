@@ -1,0 +1,57 @@
+-- Create the Authors Table first
+CREATE TABLE Authors (
+    author_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,	
+    nationality VARCHAR(50),
+    birth_date DATE
+);
+
+
+-- Create the Books table next
+CREATE TABLE Books (
+    book_id SERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    author_id INT NOT NULL,
+    genre VARCHAR(50),
+    publication_year INT,
+    available_copies INT DEFAULT 0,
+    FOREIGN KEY (author_id) REFERENCES Authors (author_id)
+);
+
+-- Create the Members table next
+CREATE TABLE Members (
+    member_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone_number VARCHAR(15),
+    join_date DATE DEFAULT CURRENT_DATE
+);
+
+-- Create the Borrowings table next
+CREATE TABLE Borrowings (
+    borrowing_id SERIAL PRIMARY KEY,
+    member_id INT NOT NULL,
+    book_id INT NOT NULL,
+    borrow_date DATE DEFAULT CURRENT_DATE,
+    return_date DATE,
+);
+
+-- Now, add the foreign key constraints using ALTER TABLE 
+
+-- For books table
+ALTER TABLE Books
+ADD CONSTRAINT fk_author 
+FOREIGN KEY (author_id) 
+REFERENCES Authors (author_id);
+
+-- For borrowings table
+ALTER TABLE Borrowings
+ADD CONSTRAINT fk_member 
+FOREIGN KEY (member_id) 
+REFERENCES Members (member_id);
+ADD CONSTRAINT fk_book 
+FOREIGN KEY (book_id) 
+REFERENCES Books (book_id);
+

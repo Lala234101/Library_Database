@@ -1,0 +1,190 @@
+# Library Management System Project Documentation
+
+## **Description**
+
+This project involves creating a relational database to manage a library system. The database will handle information about books, authors, members, and borrowing transactions. The project demonstrates essential SQL concepts such as table creation, CRUD operations, and relationships using primary and foreign keys.
+
+---
+
+## **Schema Design**
+
+The database will consist of four main tables:
+
+### **1. Authors Table**
+
+Stores information about authors.
+
+```sql
+CREATE TABLE Authors (
+    author_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    nationality VARCHAR(50),
+    birth_date DATE
+);
+```
+
+### **2. Books Table**
+
+Stores information about books and references the authors.
+
+```sql
+CREATE TABLE Books (
+    book_id SERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    author_id INT NOT NULL,
+    genre VARCHAR(50),
+    publication_year INT,
+    available_copies INT DEFAULT 0,
+    FOREIGN KEY (author_id) REFERENCES Authors (author_id)
+);
+```
+
+### **3. Members Table**
+
+Stores information about library members.
+
+```sql
+CREATE TABLE Members (
+    member_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone_number VARCHAR(15),
+    join_date DATE DEFAULT CURRENT_DATE
+);
+```
+
+### **4. Borrowings Table**
+
+Tracks borrowing transactions.
+
+```sql
+CREATE TABLE Borrowings (
+    borrowing_id SERIAL PRIMARY KEY,
+    member_id INT NOT NULL,
+    book_id INT NOT NULL,
+    borrow_date DATE DEFAULT CURRENT_DATE,
+    return_date DATE,
+    FOREIGN KEY (member_id) REFERENCES Members (member_id),
+    FOREIGN KEY (book_id) REFERENCES Books (book_id)
+);
+```
+
+---
+
+## **Step-by-Step Approach**
+
+### **Step 1: Set Up the Database**
+
+1. Choose a relational database management system (e.g., MySQL, PostgreSQL).
+2. Create a new database:
+   ```sql
+   CREATE DATABASE LibraryDB;
+   USE LibraryDB;  -- For MySQL
+   \c LibraryDB    -- For PostgreSQL
+   ```
+
+### **Step 2: Create Tables**
+
+Execute the `CREATE TABLE` statements for `Authors`, `Books`, `Members`, and `Borrowings` to create the database schema.
+
+### **Step 3: Populate Tables with Sample Data**
+
+Add sample records to each table to simulate a real library system.
+
+#### Add Authors:
+
+```sql
+INSERT INTO Authors (name, nationality, birth_date) VALUES
+('George Orwell', 'British', '1903-06-25'),
+('Jane Austen', 'British', '1775-12-16'),
+('Mark Twain', 'American', '1835-11-30');
+```
+
+#### Add Books:
+
+```sql
+INSERT INTO Books (title, author_id, genre, publication_year, available_copies) VALUES
+('1984', 1, 'Dystopian', 1949, 5),
+('Pride and Prejudice', 2, 'Romance', 1813, 3),
+('The Adventures of Tom Sawyer', 3, 'Adventure', 1876, 4);
+```
+
+#### Add Members:
+
+```sql
+INSERT INTO Members (first_name, last_name, email, phone_number) VALUES
+('Alice', 'Smith', 'alice.smith@example.com', '123-456-7890'),
+('Bob', 'Johnson', 'bob.johnson@example.com', '987-654-3210');
+```
+
+#### Add Borrowing Transactions:
+
+```sql
+INSERT INTO Borrowings (member_id, book_id, borrow_date, return_date) VALUES
+(1, 1, '2025-01-10', NULL),
+(2, 2, '2025-01-15', '2025-01-25');
+```
+
+### **Step 4: Query the Database**
+
+#### Retrieve All Books Borrowed by a Specific Member:
+
+```sql
+SELECT m.first_name, m.last_name, b.title, br.borrow_date, br.return_date
+FROM Borrowings br
+JOIN Members m ON br.member_id = m.member_id
+JOIN Books b ON br.book_id = b.book_id
+WHERE m.member_id = 1;
+```
+
+#### Update the Number of Available Copies After a Borrowing:
+
+```sql
+UPDATE Books
+SET available_copies = available_copies - 1
+WHERE book_id = 1;
+```
+
+#### Return a Book:
+
+```sql
+UPDATE Borrowings
+SET return_date = CURRENT_DATE
+WHERE borrowing_id = 1;
+
+UPDATE Books
+SET available_copies = available_copies + 1
+WHERE book_id = 1;
+```
+
+#### List All Overdue Borrowings:
+
+```sql
+SELECT m.first_name, m.last_name, b.title, br.borrow_date, br.return_date
+FROM Borrowings br
+JOIN Members m ON br.member_id = m.member_id
+JOIN Books b ON br.book_id = b.book_id
+WHERE br.return_date IS NULL AND br.borrow_date < CURRENT_DATE - INTERVAL '30 DAYS';
+```
+
+### **Step 5: Test the Database**
+
+1. Write additional queries to test each table’s integrity and relationships.
+2. Verify constraints by attempting invalid operations (e.g., adding a borrowing transaction for a non-existent member).
+
+---
+
+## **Future Enhancements**
+
+1. Add functionality to track late fees for overdue books.
+2. Include additional tables for genres, publishers, or library branches.
+3. Build a user interface using a programming language like Python (e.g., Flask or Django).
+4. Integrate advanced analytics for library usage trends.
+
+---
+
+## **Conclusion**
+
+This Library Management System demonstrates the core principles of database design and SQL. It covers schema creation, relationships, and essential operations such as inserting, updating, and querying data. By completing this project, you will gain a solid understanding of how to manage relational databases for real-world applications.
+
