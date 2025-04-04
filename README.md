@@ -30,7 +30,7 @@ Stores author information.
 
 * nationality
 
-*birth_date
+* birth_date
 
 # Books Table
 
